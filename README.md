@@ -35,7 +35,7 @@ Sample State
   ],
   "sharedLinks": [
     {
-      "name": "Documentação da API Interna",
+      "name": "Documentação da API",
       "key": "doc_api_interna",
       "URL": "https://docs.suaempresa.com/api/v1"
     }
