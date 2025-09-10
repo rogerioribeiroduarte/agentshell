@@ -31,8 +31,9 @@ export interface Agent {
   name: string; // E um nome para exibição
   agentUrl: string;
   welcomeText: string;
-  models: string[]; // Array de nomes de modelos
-  sharedVariables: SharedVariable[];
-  sharedLinks: SharedLink[];
-  // ... outras propriedades
+  models: string[];
+  sharedVariables: string[];
+  sharedLinks: string[];
+  variables: { key: string; value: string }[];
+  links: { key: string; URL: string }[];
 }

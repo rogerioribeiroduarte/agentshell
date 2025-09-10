@@ -20,7 +20,7 @@ export async function sendMessage(newMessage: string) {
 
     try {
         // 3. Montar a requisição
-        const headers = {
+        const headers: { [key: string]: string } = {
             'Content-Type': 'application/json',
         };
 
@@ -43,7 +43,7 @@ export async function sendMessage(newMessage: string) {
         });
 
         // Regra 3: Adiciona as variáveis específicas do agente (Agent Variables)
-        activeAgent.variables.forEach(variable => {
+        activeAgent.variables.forEach((variable: { key: string; value: string }) => {
             headers[variable.key] = variable.value;
         });
         
