@@ -3,10 +3,11 @@
     <v-main>
       <v-container fluid>
         <v-row>
-          <v-col cols="12" md="4">
-            <AgentSelector />
+          <v-col cols="12" md="2">
+            <ConfigManager /> 
             </v-col>
-          <v-col cols="12" md="8">
+          <v-col cols="12" md="10">
+            <AgentSelector />
             <ChatPanel />
           </v-col>
         </v-row>
@@ -20,6 +21,7 @@ import { onMounted } from 'vue';
 import { useConfigurationStore } from '@/stores/configuration';
 import AgentSelector from '@/components/AgentSelector.vue';
 import ChatPanel from '@/components/ChatPanel.vue';
+import ConfigManager from '@/components/ConfigManager.vue';
 
 const configurationStore = useConfigurationStore();
 

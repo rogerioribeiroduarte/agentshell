@@ -22,9 +22,48 @@ export async function sendMessage(newMessage: string) {
         // 3. Montar a requisição
         const headers = {
             'Content-Type': 'application/json',
-            // Adicionar aqui a lógica para pegar chaves e variáveis do configStore
-            // Ex: 'Authorization': `Bearer ${provider.accessKey}`
         };
+
+                // Regra 1: Adiciona os modelos como headers 'model_0', 'model_1', ...
+        activeAgent.models.forEach((modelName, index) => {
+            headers[`model${index}`] = modelName;
+        });
+
+        // Regra 2: Adiciona as variáveis compartilhadas (Shared Variables)
+        // Para eficiência, criamos um mapa para busca rápida das variáveis
+        const sharedVarsMap = new Map(
+            configStore.sharedVariables.map(sv => [sv.key, sv.value])
+        );
+        
+        activeAgent.sharedVariables.forEach(variableKey => {
+            const value = sharedVarsMap.get(variableKey);
+            if (value) { // Adiciona apenas se a chave compartilhada for encontrada
+                headers[variableKey] = value;
+            }
+        });
+
+        // Regra 3: Adiciona as variáveis específicas do agente (Agent Variables)
+        activeAgent.variables.forEach(variable => {
+            headers[variable.key] = variable.value;
+        });
+        
+        // Passo A: Encontrar todos os provedores únicos baseados nos modelos do agente
+        const providerNames = activeAgent.models.map(modelName => {
+            const modelInfo = configStore.models.find(m => m.model === modelName);
+            return modelInfo?.provider;
+        }).filter((provider): provider is string => !!provider); // Filtra nulos/undefined e ajusta o tipo
+
+        const uniqueProviderNames = [...new Set(providerNames)];
+
+        // Passo B: Para cada provedor único, encontrar sua accessKey e adicionar ao header
+        uniqueProviderNames.forEach(providerName => {
+            const providerInfo = configStore.providers.find(p => p.provider === providerName);
+            if (providerInfo && providerInfo.accessKey) {
+                // Criamos um header dinâmico, ex: "Authorization-openai"
+                const headerName = `Authorization-${providerInfo.provider}`;
+                headers[headerName] = providerInfo.accessKey;
+            }
+        });
 
         const body = {
             // Reenviando as mensagens anteriores + a nova
